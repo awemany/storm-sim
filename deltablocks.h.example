@@ -1,0 +1,105 @@
+#ifndef SDB_DELTABLOCKS_H
+#define SDB_DELTABLOCKS_H
+// (C)opyright 2019 awemany, see file COPYING for details
+
+#include "scheduler.h"
+
+const size_t BYTE = 1;
+const size_t KILOBYTE = 1000 * BYTE;
+const size_t KIBIBYTE = 1024 * BYTE;
+
+/* Average block time (weak blocks) */
+const double WEAK_BLOCK_TIME = 600000;
+
+/*! Mean time between transactions into the system */
+const double TRANSACTION_TIME = 100000;
+
+/*! Node connection scenario */
+enum NodeScenario {
+    scRandom, // random connection between nodes
+    sc012, // Three nodes, 1<->0<->2 connected
+};
+
+const NodeScenario NODE_SCENARIO=scRandom;
+
+/*! For node scenario scRandom: Number of nodes */
+const double NUM_NODES = 10;
+
+/*! For node scenario scRandom: Number of connections between nodes */
+const double NUM_NODECONNS = 30;
+
+/*! Mean propagation and processing delay floor between nodes,
+ *  gaussian distribution (clipped to stay above or equal to zero) */
+const double MEAN_LATENCY = 250000;
+
+/*! Sigma for LATENCY_FLOOR. */
+const double LATENCY_SIGMA = 100000;
+
+/*! Absolute minimum latency floor */
+const double LATENCY_FLOOR = 50000;
+
+/*! Mean link bandwidth. Note that a link is a connection between two
+ *  nodes and thus rather a virtual link, a.k.a. bitcoind-bitcoind TCP
+ *  connection. Also, the values are per direction. */
+const double MEAN_BANDWIDTH = 0.2;
+
+const double BANDWIDTH_SIGMA = 0.02;
+
+//! Floor value for link bandwidth
+const double BANDWIDTH_FLOOR = 0.15;
+
+/*! Transaction size in the network */
+const size_t TXN_SIZE = 223;
+
+/*! Incremental propagation delay per transaction in a delta block's delta set */
+const size_t TXN_SIZE_BLOCK = 100;
+
+/*! Incremental propagation delay per referenced ancestor */
+const size_t ANCESTOR_SIZE = 100;
+
+/*! Empty delta block size */
+const size_t DELTA_BLOCK_EMPTY_SIZE = 200;
+
+/*! Block rerequest probability (~= decoding failure) */
+const double BLOCK_REREQUEST_PROBABILITY = 0.15;
+
+/*! Size of a block (re)request */
+const size_t BLOCK_REQUEST_SIZE = 100;
+
+/*! Fraction of generated TXN that are doublespends of (and thus
+ *  incompatible with) earlier generated transaction. Modelled as
+ *  simply the same transaction twice as we don't care about the
+ *  details of inputs and outputs.*/
+const double DOUBLESPEND_RATE = 0.1;
+
+/*! Should miners not mine anything that they noticed as a doublespend? */
+const bool MINERS_DROP_KNOWN_DOUBLESPEND = true;
+
+/*! Relay known doublespends? */
+const bool RELAY_DOUBLESPENDS = true;
+
+/*! Minimum age for a miner to consider a transaction from his or her mempool */
+const uint64_t TXN_MEMPOOL_MIN_AGE = 0;
+
+/*! Maximum age for TXN in mempool. If larger than this, it is purged. */
+const uint64_t TXN_MEMPOOL_MAX_AGE = 72000000;
+
+/*! Use the merging delta blocks method? */
+const bool USE_DELTABLOCKS_METHOD = true;
+
+/*! Fraction of transactions for which confirmation stats are traced */
+const double TXN_TRACE_PROBABILITY = 1.0;
+
+/*! Node at which to trace TXNs */
+const size_t TXN_TRACE_NODE = 0;
+
+/*! Track and count transactions that are dropped once, or count those
+ *  that are dropped 'forever' (not included at any point of later
+ *  observation) */
+const bool TXN_TRACE_TRACK_ONCE = false;
+
+extern Scheduler* deltablocksSetup(size_t seed);
+
+extern void printTxnFirstConfirmStats(void);
+
+#endif
