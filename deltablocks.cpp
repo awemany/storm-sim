@@ -836,7 +836,7 @@ void printTxnFirstConfirmStats(void) {
         tfm::printf("\n");
     }
 }
-Scheduler* deltablocksSetup(uint64_t seed) {
+Scheduler* deltablocksSetup(size_t seed) {
     rng.seed(seed);
     createNodes();
     connectNodes();
